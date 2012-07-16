@@ -1,0 +1,49 @@
+html, body
+{
+    background-color: #F9F9F9;
+}
+
+body
+{
+    font-size:        14px;
+    font-family:      "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+    color:            #313131;
+}
+
+div#header
+{
+	padding: 3px 5px 15px;
+}
+div#main_nav span.nav_links
+{
+	float: left;
+	margin-left: 230px;
+	border: thin solid;
+	padding: 2px;
+}
+div#main_nav div#login
+{
+	float: right;
+	margin-right: 30px;
+	border: thin solid;
+	padding: 2px;
+}
+
+
+
+
+
+div#content
+{
+	padding: 10px 0px;
+}
+
+
+
+
+
+
+div#footer
+{
+	padding: 10px 0px;
+}

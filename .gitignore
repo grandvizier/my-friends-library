@@ -1,5 +1,15 @@
+## root (extra files locally)
 .metadata/
-
 web_app_first_attempt/
-
 RemoteSystemsTempFiles
+
+
+## Symfony
+
+web_app/app/cache/*
+web_app/app/logs/*
+web_app/app/config/parameters.yml
+web_app/app/config/security.yml
+web_app/web/uploads/*
+web_app/data/sql/*
+web_app/.project
