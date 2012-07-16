@@ -1,0 +1,15 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     localhost
+    database_port:     
+    database_name:     library
+    database_user:     root
+    database_password: root
+
+    mailer_transport:  smtp
+    mailer_host:       localhost
+    mailer_user:       
+    mailer_password:   
+
+    locale:            en
+    secret:            26f6a1da4e137edcbdc4cd8a8036e6ae48f2fe7a
