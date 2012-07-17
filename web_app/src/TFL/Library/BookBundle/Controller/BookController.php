@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use TFL\Library\BookBundle\Entity\Book;
-use TFL\Library\BookBundle\Entity\BookSearch;
+use TFL\Library\BookBundle\Entity\BookOwner;
 use TFL\Library\BookBundle\Util\GoogleBookSearch;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,28 +99,49 @@ class BookController extends Controller
 			throw new AccessDeniedException('This user does not have access to create a new book.');
 		}
 
-		//TODO find book by isbn in DB first
+		//find book by isbn in DB first
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');
+		$book = $repository->findOneByIsbn($isbn);
 
-		$googleBook = new GoogleBookSearch();
-		$book_array = $googleBook->getBookByISBN($isbn);
-
-		if( $book_array )
+		if(!$book)
 		{
+			$googleBook = new GoogleBookSearch();
+			$book_array = $googleBook->getBookByISBN($isbn);
+	
+			if( !$book_array )
+			{
+				//TODO handle book not found
+				return array('isbn' => "no isbn", 'google_books' => "so no book", 'user' => print_r($user, true));
+			}
+			
 			$book = new Book();
+			$book->setIsbn($isbn);
 			$book->setTitle($book_array['title']);
 			$book->setAuthor($book_array['author']);
+			//TODO save image locally, rather than the google link
 			$book->setImage($book_array['image']);
 
 			$em = $this->getDoctrine()->getEntityManager();
 			$em->persist($book);
 			$em->flush();
 		}
-		else
+		
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+		$book_owner = $repository->findOneBy(array('user_id' => $user->getId(), 'book_id' => $book->getId()));
+		if($book_owner)
 		{
-			//TODO handle book not found
-			return array('isbn' => "no isbn", 'google_books' => "so no book", 'user' => print_r($user, true));
+			//TODO handle user owning 2 copies of the same book
+			return array('isbn' => $isbn, 'google_books' => "already has a copy of this book", 'user' => print_r($book_owner, true));
 		}
 
-		return array('isbn' => $isbn, 'google_books' => print_r($book, true), 'user' => print_r($user, true));
+		$book_owner = new BookOwner();
+		$book_owner->setBookId($book->getId());
+		$book_owner->setUserId($user->getId());
+		
+		$em = $this->getDoctrine()->getEntityManager();
+		$em->persist($book_owner);
+		$em->flush();
+
+		return array('isbn' => $isbn, 'google_books' => print_r($book, true), 'user' => print_r($book_owner, true));
 	}
 }
