@@ -43,36 +43,53 @@ class BookController extends Controller
 	{
 		$book = null;
 		$book_array = null;
-		$defaultData = array('search_type' => 'keywords');
-    	
+		$book_not_found = false;
+		$defaultData = array('search_type' => 'isbn');
+
 		$form = $this->createFormBuilder($defaultData)
 			->add('isbn', 'text')
+			->add('search_type', 'hidden')
+			->getForm();
+
+		$defaultData['search_type'] = 'keywords';
+		$keywords_form = $this->createFormBuilder($defaultData)
 			->add('keywords', 'text')
 			->add('search_type', 'hidden')
 			->getForm();
-    	
+
 		if ($request->getMethod() == 'POST') 
 		{
-			$form->bindRequest($request);
-			$form_data = $form->getData();
+			$form_data = $request->get('form');
+
 			$googleBook = new GoogleBookSearch();
 			if ($form_data['search_type'] == 'isbn') 
 			{
+				$form->bindRequest($request);
 				$book = $googleBook->getBookByISBN($form_data['isbn']);
 			}
 			else
 			{
+				$keywords_form->bindRequest($request);
 				$book_array = $googleBook->getBooksByKeyword( $form_data['keywords'] );
 			}
-			var_dump($book_array);
+			if(!$book || !$book_array)
+			{
+				$book_not_found = true;
+			}
 		}
-    	
-		return array('form' => $form->createView(), 'book' => $book, 'book_array' => $book_array);
+
+		return array(
+			'form' => $form->createView(), 
+			'keywords_form' => $keywords_form->createView(), 
+			'book' => $book, 
+			'book_array' => $book_array,
+			'book_not_found' => $book_not_found
+		);
 	}
 
     
 	/**
-	 * @Route("/new/{isbn}")
+	 * @Route("/new/{isbn}", name="add_to_library")
 	 * @Template()
 	 */
 	public function createAction($isbn)
@@ -81,7 +98,9 @@ class BookController extends Controller
 		if (!is_object($user) || !$user instanceof UserInterface) {
 			throw new AccessDeniedException('This user does not have access to create a new book.');
 		}
-    	
+
+		//TODO find book by isbn in DB first
+
 		$googleBook = new GoogleBookSearch();
 		$book_array = $googleBook->getBookByISBN($isbn);
 
@@ -101,7 +120,7 @@ class BookController extends Controller
 			//TODO handle book not found
 			return array('isbn' => "no isbn", 'google_books' => "so no book", 'user' => print_r($user, true));
 		}
-		
+
 		return array('isbn' => $isbn, 'google_books' => print_r($book, true), 'user' => print_r($user, true));
 	}
 }

@@ -1,0 +1,29 @@
+
+div#isbn_form
+{
+	float: left;
+	margin-left: 130px;
+}
+
+div#keywords_form
+{
+	float: right;
+	margin-right: 150px;
+}
+
+
+div.book
+{
+	padding: 50px;
+}
+
+ul
+{
+	padding: 50px;
+	list-style: none;
+}
+
+li.book
+{
+	
+}

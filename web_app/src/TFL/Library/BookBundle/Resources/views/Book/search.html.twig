@@ -1,32 +1,50 @@
 {% extends '::base.html.twig' %}
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('bundles/library/css/search.css') }}" type="text/css" />
+{% endblock %}
 
 {% block title %}Search for a book{% endblock %}
 
 {% block body %}
-	<form action="{{ path('book_search') }}" method="post" {{ form_enctype(form) }}>
-	    {{ form_widget(form) }}
-	    <input type="submit" />
-	</form>
+	<div id="isbn_form">
+		<form action="{{ path('book_search') }}" method="post" {{ form_enctype(form) }}>
+		    {{ form_widget(form) }}
+		    <input type="submit" name="isbn" />
+		</form>
+	</div>
+
+	<div id="keywords_form">
+		<form action="{{ path('book_search') }}" method="post" {{ form_enctype(keywords_form) }}>
+		    {{ form_widget(keywords_form) }}
+		    <input type="submit" name="keywords" />
+		</form>
+	</div>
 	
 	{% if book %}
-		<hr/>
 		<div class="book">
 			<h3>{{ book.title }}</h3>
 			<h4>{{ book.author }}</h4>
 			<img src="{{ book.image }}" alt="{{ book.title }}" />
+			<a href="{{ path('add_to_library', { 'isbn': book.identifier.ISBN2 }) }}" class="add_to_library">Add book to library</a>
 		</div>
 	{% elseif book_array %}
-		<hr/>
 		<ul>
 		{% for book in book_array %}
 			<li class="book">
 				<h3>{{ book.title }}</h3>
 				<h4>{{ book.author }}</h4>
 				<img src="{{ book.image }}" alt="{{ book.title }}" />
+				<a href="{{ path('add_to_library', { 'isbn': book.identifier.ISBN2 }) }}" class="add_to_library">Add book to library</a>
 			</li>
 		{% endfor %}
 		</ul>
 		<pre>{{ book_array }}</pre>
+	{% elseif book_not_found %}
+		<div class="book">
+			We were unable to find a book through the Google Books API based on your criteria. 
+			< Contact us > so we can fix this problem. 
+		</div>
 	{% endif %}
 
 {% endblock %}
