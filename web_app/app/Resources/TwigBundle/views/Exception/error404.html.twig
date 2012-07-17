@@ -3,7 +3,8 @@
 {% block title %}Page not found{% endblock %}
 
 {% block body %}
-	<h2>Oops, this book has empty pages:</h2>
+	<h2>Oops, this book has empty pages: </h2>
+	<h3>{{ exception.message|nl2br|format_file_from_text }}</h3>
 	<img src="http://i.istockimg.com/file_thumbview_approve/192934/2/stock-photo-192934-blank-book-pages-from-1843.jpg" alt="empty book" />
 	<div>The page you are looking for does not exist.</div>
 	<div>

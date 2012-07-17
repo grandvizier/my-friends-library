@@ -1,7 +1,7 @@
 TFLLibraryBookBundle:
     resource: "@TFLLibraryBookBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /book
 
 TFLLibraryUserBundle:
     resource: "@TFLLibraryUserBundle/Controller/"

@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}Search for a book{% endblock %}
+
+{% block body %}
+	<form action="{{ path('book_search') }}" method="post" {{ form_enctype(form) }}>
+	    {{ form_widget(form) }}
+	    <input type="submit" />
+	</form>
+	
+	{% if book %}
+		<hr/>
+		<div class="book">
+			<h3>{{ book.title }}</h3>
+			<h4>{{ book.author }}</h4>
+			<img src="{{ book.image }}" alt="{{ book.title }}" />
+		</div>
+	{% elseif book_array %}
+		<hr/>
+		<ul>
+		{% for book in book_array %}
+			<li class="book">
+				<h3>{{ book.title }}</h3>
+				<h4>{{ book.author }}</h4>
+				<img src="{{ book.image }}" alt="{{ book.title }}" />
+			</li>
+		{% endfor %}
+		</ul>
+		<pre>{{ book_array }}</pre>
+	{% endif %}
+
+{% endblock %}

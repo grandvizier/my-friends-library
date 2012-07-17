@@ -1,11 +1,10 @@
-<html>
-    <head>
-        <title>New Book created</title>
-    </head>
-    <body>
+{% extends '::base.html.twig' %}
+
+{% block title %}New Book created{% endblock %}
+
+{% block body %}
         A new book will be created with the isbn: {{isbn}}
         <br/>
         For user: <pre>{{user}}</pre> 
         <pre>{{google_books}}</pre>
-    </body>
-</html>
+{% endblock %}
