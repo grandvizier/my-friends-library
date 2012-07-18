@@ -18,7 +18,7 @@ class UserLibraryController extends Controller
 	{
 		$user = $this->container->get('security.context')->getToken()->getUser();
 		if (!is_object($user) || !$user instanceof UserInterface) {
-			throw new AccessDeniedException('This user does not have access to create a new book.');
+			throw new AccessDeniedException('This user does not have access to view their own library.');
 		}
 		
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
@@ -27,4 +27,16 @@ class UserLibraryController extends Controller
 		
 		return array('books' => $books);
 	}	
+	
+	/**
+	 * @Route("/full_library", name="full_library")
+	 * @Template()
+	 */
+	public function completeLibraryAction()
+	{
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+		$books = $repository->findByIsDeleted(0);
+//var_dump($books);		
+		return array('books' => $books);
+	}
 }

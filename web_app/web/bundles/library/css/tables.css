@@ -1,0 +1,44 @@
+/**** TABLE STYLES ****/
+
+
+table td {
+	padding: 0.5em;
+}
+
+td, td img {
+	vertical-align: top;
+}
+
+/***	SORTED LIBRARY  ***/
+
+#fullLibrary {
+	border-collapse: collapse;
+	font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Sans-Serif;
+	font-size: 12px;
+	margin: 20px;
+	text-align: left;
+	width: 780px;
+}
+
+#fullLibrary th {
+	border-bottom: 2px solid #6678B1;
+	font-size: 14px;
+	padding: 10px 8px;
+}
+
+#fullLibrary td {
+	color: #666699;
+	padding: 9px 8px 0;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+#fullLibrary tbody td a:hover{
+	color: #000099;
+}
+
+#fullLibrary tbody td a, a:visited {
+	color: #666699;
+	display:block;
+	height:100%;
+	width:100%;
+}

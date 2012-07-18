@@ -6,13 +6,24 @@
 {% block body %}
 	Title:
 	<h1>{{ book.title }}</h1>
-	
+	<div class="book">
+		<h4>{{ book.author }}</h4>
+		<img src="{{ book.image }}" alt="{{ book.title }}" />
+		<p>Isnb: {{ book.isbn }}</p>
+		<a href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book to library</a>
+	</div>
 
 	{%  if book_owners %}
+		<hr/>
 		{% for book_owner in book_owners %}
-			<pre>{{ dump(book) }} {{ dump(book_owner.owner) }}</pre>
+			<pre>id: {{ book_owner.owner.id }}</pre>
+			<pre>username: {{ book_owner.owner.username }}</pre>
+			<pre>email: {{ book_owner.owner.email }}</pre>
+			<pre>enabled: {{ book_owner.owner.enabled }}</pre>
+			<pre>lastLogin: {{ book_owner.owner.lastLogin|date("m/d/Y \\a\\t g:ia") }}</pre>
 		{% endfor %}
 	{% else %}
+		<hr/>
 		<h3>This book is not owned by anyone</h3>
 		< Contact us > if there is an error
 	{% endif %}

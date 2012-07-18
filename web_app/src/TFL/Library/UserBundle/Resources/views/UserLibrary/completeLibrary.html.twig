@@ -1,0 +1,35 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('bundles/library/css/tables.css') }}" type="text/css" />
+{% endblock %}
+
+{% block body %}
+All the books currently registered:
+<table id="fullLibrary" class="tablesorter">
+	<thead>
+		<th>Title</th>
+		<th>Author</th>
+		<th>Owner</th>
+	</thead>
+{% for book_owner in books %}
+	<tr>
+		<td><a href="{{ path('book_display', { 'isbn': book_owner.book.isbn }) }}">{{ book_owner.book.title }}</a></td>
+		<td><a href="{{ path('book_display', { 'isbn': book_owner.book.isbn }) }}">{{ book_owner.book.author }}</a></td>
+		<td><a href="/profile">{{ book_owner.owner.username }}</a></td>
+	</tr>
+{% endfor %}
+</table>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('bundles/library/js/jquery.tablesorter.js') }}"></script>
+<script>
+$(document).ready(function() 
+    { 
+        $("#fullLibrary").tablesorter({sortList: [[0,0], [1,1]]}); 
+    } 
+);
+</script>
+{% endblock %}

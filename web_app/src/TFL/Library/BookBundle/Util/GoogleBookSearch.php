@@ -89,6 +89,7 @@ class GoogleBookSearch {
 		$book['description'] = FALSE;
 		$book['publisher'] = FALSE;
 		$book['date'] = FALSE;
+		$book['image'] = FALSE;
 		
 		while ($this->xpp->read() && $this->xpp->name != "entry") {
 			if ($this->xpp->name{0} == "#")
