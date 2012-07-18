@@ -14,27 +14,33 @@ use Symfony\Component\HttpFoundation\Request;
 class BookController extends Controller
 {
 	/**
-	 * @Route("/title/{title}", name="book_display")
+	 * @Route("/display/{isbn}", name="book_display")
 	 * @Template()
 	 */
-	public function indexAction($title)
+	public function indexAction($isbn)
 	{
-		if( is_numeric($title) )
+		//find book by isbn in DB first
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');
+		$book = $repository->findOneByIsbn($isbn);
+		if($book)
 		{
-			$book = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book')->find($title);
-
-			if (!$book) {
-				throw $this->createNotFoundException('No book found for id '.$title);
-			}
-        	
-			return array('book_title' => $book->getTitle());
+			$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+			$book_owners = $repository->findByBookId($book->getId());
 		}
 		else
 		{
-			return array('book_title' => $title);
+			$book_owners = FALSE;
+			$googleBook = new GoogleBookSearch();
+			$book_array = $googleBook->getBookByISBN($isbn);
+			//TODO handle book not found
+			$book_array['isbn'] = $isbn;
+			$book = $book_array;
 		}
+		
+		return array('book_owners' => $book_owners, 'book' => $book);
 	}
-    
+
+	
 	/**
 	 * @Route("/search", name="book_search")
 	 * @Template()
@@ -87,6 +93,7 @@ class BookController extends Controller
 		);
 	}
 
+	
     
 	/**
 	 * @Route("/new/{isbn}", name="add_to_library")
@@ -127,7 +134,7 @@ class BookController extends Controller
 		}
 		
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
-		$book_owner = $repository->findOneBy(array('user_id' => $user->getId(), 'book_id' => $book->getId()));
+		$book_owner = $repository->findOneBy(array('userId' => $user->getId(), 'bookId' => $book->getId()));
 		if($book_owner)
 		{
 			//TODO handle user owning 2 copies of the same book
@@ -135,8 +142,8 @@ class BookController extends Controller
 		}
 
 		$book_owner = new BookOwner();
-		$book_owner->setBookId($book->getId());
-		$book_owner->setUserId($user->getId());
+		$book_owner->setBook($book);
+		$book_owner->setOwner($user);
 		
 		$em = $this->getDoctrine()->getEntityManager();
 		$em->persist($book_owner);

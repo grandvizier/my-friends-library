@@ -86,7 +86,10 @@ class GoogleBookSearch {
 	
 	private function parseBook() {
 		$book = array();
-			
+		$book['description'] = FALSE;
+		$book['publisher'] = FALSE;
+		$book['date'] = FALSE;
+		
 		while ($this->xpp->read() && $this->xpp->name != "entry") {
 			if ($this->xpp->name{0} == "#")
 				continue;
@@ -107,6 +110,7 @@ class GoogleBookSearch {
 				case 'dc:identifier':
 					if (!isset($book['identifier'])) {
 						$book['identifier'] = array();
+						$book['identifier']['ISBN2'] = FALSE;
 					}
 					$dt = $this->parseIdentifier();
 					$book['identifier'][$dt['type']] = $dt['data'];

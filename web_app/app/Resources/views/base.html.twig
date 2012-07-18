@@ -15,6 +15,9 @@
         		<span class="nav_links">
         			{% block main_nav %}
         				<a href="{{ path('book_search') }}">Find a book</a>
+		        		{% if app.user %}
+	        				<a href="{{ path('my_library') }}">My Library</a>
+	        			{% endif %}
         			{% endblock %}
         		</span>
         		<div id="login">

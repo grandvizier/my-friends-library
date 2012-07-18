@@ -19,19 +19,19 @@ class BookOwner
 	protected $id;	
 	
 	/**
-	 * @ORM\Column(type="integer")
+	 * @ORM\Column(name="book_id", type="integer")
 	 */
-	protected $book_id;
+	protected $bookId;
 	
 	/**
-	 * @ORM\Column(type="integer")
+	 * @ORM\Column(name="user_id", type="integer")
 	 */
-	protected $user_id;
+	protected $userId;
 	
 	/**
-	 * @ORM\Column(type="boolean")
+	 * @ORM\Column(name="is_deleted", type="boolean")
 	 */
-	protected $is_deleted = FALSE;
+	protected $isDeleted = FALSE;
 	
 	/**
 	 * @ORM\Column(type="datetime")
@@ -43,7 +43,18 @@ class BookOwner
 	 */
 	protected $updated_at;
 
- 
+	/**
+	 * @ORM\ManyToOne(targetEntity="Book")
+	 * @ORM\JoinColumn(name="book_id", referencedColumnName="id")
+	 */
+	private $book;
+	
+	/**
+	 * @ORM\ManyToOne(targetEntity="TFL\Library\UserBundle\Entity\User")
+	 * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+	 */
+	private $owner;
+	
 
 	/**
 	 * Get id
@@ -56,69 +67,69 @@ class BookOwner
 	}
 
 	/**
-	 * Set book_id
+	 * Set bookId
 	 *
 	 * @param integer $bookId
 	 * @return BookOwner
 	 */
 	public function setBookId($bookId)
 	{
-		$this->book_id = $bookId;
+		$this->bookId = $bookId;
 		return $this;
 	}
 
 	/**
-	 * Get book_id
+	 * Get bookId
 	 *
 	 * @return integer 
 	 */
 	public function getBookId()
 	{
-		return $this->book_id;
+		return $this->bookId;
 	}
 
 	/**
-	 * Set user_id
+	 * Set userId
 	 *
 	 * @param integer $userId
 	 * @return BookOwner
 	 */
 	public function setUserId($userId)
 	{
-		$this->user_id = $userId;
+		$this->userId = $userId;
 		return $this;
 	}
 
 	/**
-	 * Get user_id
+	 * Get userId
 	 *
 	 * @return integer 
 	 */
 	public function getUserId()
 	{
-		return $this->user_id;
+		return $this->userId;
 	}
 
 	/**
-	 * Set is_deleted
+	 * Set isDeleted
 	 *
 	 * @param boolean $isDeleted
 	 * @return BookOwner
 	 */
 	public function setIsDeleted($isDeleted)
 	{
-		$this->is_deleted = $isDeleted;
+		$this->isDeleted = $isDeleted;
 		return $this;
 	}
 
 	/**
-	 * Get is_deleted
+	 * Get isDeleted
 	 *
 	 * @return boolean 
 	 */
 	public function getIsDeleted()
 	{
-		return $this->is_deleted;
+		return $this->isDeleted;
 	}
 
 	/**
@@ -171,7 +182,48 @@ class BookOwner
 	 */
 	public function preUpdate()
 	{
+		
 		$this->setUpdatedAt(new \DateTime("now"));
+	}
+	
+	/**
+	 * 
+	 * @return Book 
+	 */
+	public function getBook()
+	{
+		return $this->book;
+	}
+	
+	/**
+	 * 
+	 * @param Book $book
+	 * @return BookOwner 
+	 */
+	public function setBook($book)
+	{
+		$this->book = $book;
+		return $this;
+	}
+	
+	/**
+	 * 
+	 * @return User 
+	 */
+	public function getOwner()
+	{
+		return $this->owner;
+	}
+	
+	/**
+	 * 
+	 * @param User $owner
+	 * @return BookOwner 
+	 */
+	public function setOwner($owner)
+	{
+		$this->owner = $owner;
+		return $this;
 	}
 	
 }

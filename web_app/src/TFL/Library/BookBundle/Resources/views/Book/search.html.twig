@@ -27,6 +27,7 @@
 			<h4>{{ book.author }}</h4>
 			<img src="{{ book.image }}" alt="{{ book.title }}" />
 			<a href="{{ path('add_to_library', { 'isbn': book.identifier.ISBN2 }) }}" class="add_to_library">Add book to library</a>
+			<a href="{{ path('book_display', { 'isbn': book.identifier.ISBN2 }) }}" class="book_display">Display book</a>
 		</div>
 	{% elseif book_array %}
 		<ul>
@@ -34,8 +35,15 @@
 			<li class="book">
 				<h3>{{ book.title }}</h3>
 				<h4>{{ book.author }}</h4>
+				<p>{{ book.description }}</p>
+				<p>{{ book.publisher }}: {{ book.date|date("m/d/Y") }}</p>
 				<img src="{{ book.image }}" alt="{{ book.title }}" />
-				<a href="{{ path('add_to_library', { 'isbn': book.identifier.ISBN2 }) }}" class="add_to_library">Add book to library</a>
+				{% if book.identifier.ISBN2 %}
+					<a href="{{ path('add_to_library', { 'isbn': book.identifier.ISBN2 }) }}" class="add_to_library">Add book to library</a>
+					<a href="{{ path('book_display', { 'isbn': book.identifier.ISBN2 }) }}" class="book_display">Display book</a>
+				{% else %}
+					<span class="not found">Google Books API did not provide an ISBN for this book</span>
+				{% endif %}
 			</li>
 		{% endfor %}
 		</ul>

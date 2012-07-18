@@ -2,6 +2,7 @@
 namespace TFL\Library\BookBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -36,93 +37,94 @@ class Book
 	 */
 	protected $image;
 
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
-    /**
-     * Set title
-     *
-     * @param text $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
+	/**
+	 * Get id
+	 *
+	 * @return integer 
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    /**
-     * Get title
-     *
-     * @return text 
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
+	/**
+	 * Set title
+	 *
+	 * @param text $title
+	 */
+	public function setTitle($title)
+	{
+		$this->title = $title;
+	}
 
-    /**
-     * Set isbn
-     *
-     * @param integer $isbn
-     */
-    public function setIsbn($isbn)
-    {
-        $this->isbn = $isbn;
-    }
+	/**
+	 * Get title
+	 *
+	 * @return text 
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
 
-    /**
-     * Get isbn
-     *
-     * @return integer 
-     */
-    public function getIsbn()
-    {
-        return $this->isbn;
-    }
+	/**
+	 * Set isbn
+	 *
+	 * @param integer $isbn
+	 */
+	public function setIsbn($isbn)
+	{
+		$this->isbn = $isbn;
+	}
 
-    /**
-     * Set author
-     *
-     * @param text $author
-     */
-    public function setAuthor($author)
-    {
-        $this->author = $author;
-    }
+	/**
+	 * Get isbn
+	 *
+	 * @return integer 
+	 */
+	public function getIsbn()
+	{
+		return $this->isbn;
+	}
 
-    /**
-     * Get author
-     *
-     * @return text 
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
+	/**
+	 * Set author
+	 *
+	 * @param text $author
+	 */
+	public function setAuthor($author)
+	{
+		$this->author = $author;
+	}
 
-    /**
-     * Set image
-     *
-     * @param string $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
+	/**
+	 * Get author
+	 *
+	 * @return text 
+	 */
+	public function getAuthor()
+	{
+		return $this->author;
+	}
 
-    /**
-     * Get image
-     *
-     * @return string 
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
+	/**
+	 * Set image
+	 *
+	 * @param string $image
+	 */
+	public function setImage($image)
+	{
+		$this->image = $image;
+	}
+
+	/**
+	 * Get image
+	 *
+	 * @return string 
+	 */
+	public function getImage()
+	{
+		return $this->image;
+	}
 }

@@ -1,9 +1,19 @@
-<html>
-    <head>
-        <title>This is the page for {{ book_title }}</title>
-    </head>
-    <body>
-        Title:
-        <h1>{{ book_title }}</h1>
-    </body>
-</html>
+{% extends '::base.html.twig' %}
+
+{% block title %}This is the page for {{ book.title }}{% endblock %}
+
+        
+{% block body %}
+	Title:
+	<h1>{{ book.title }}</h1>
+	
+
+	{%  if book_owners %}
+		{% for book_owner in book_owners %}
+			<pre>{{ dump(book) }} {{ dump(book_owner.owner) }}</pre>
+		{% endfor %}
+	{% else %}
+		<h3>This book is not owned by anyone</h3>
+		< Contact us > if there is an error
+	{% endif %}
+{% endblock %}
