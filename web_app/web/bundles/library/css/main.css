@@ -29,8 +29,10 @@ div#main_nav div#login
 	padding: 2px;
 }
 
-
-
+.error
+{
+	color: red;	
+}
 
 
 div#content

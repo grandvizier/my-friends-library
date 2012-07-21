@@ -11,7 +11,7 @@ class HomeController extends Controller
 	 * @Route("/")
 	 * @Template()
 	 */
-	public function indexAction()
+	public function homepageAction()
 	{
 		return array();
 	}

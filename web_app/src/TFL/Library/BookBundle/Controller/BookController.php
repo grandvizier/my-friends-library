@@ -118,7 +118,7 @@ class BookController extends Controller
 			if( !$book_array )
 			{
 				//TODO handle book not found
-				return array('isbn' => "no isbn", 'google_books' => "so no book", 'user' => print_r($user, true));
+				return array('isbn' => "no isbn", 'title' => "so no book", 'user' => $user->getUsername() );
 			}
 			
 			$book = new Book();
@@ -138,7 +138,7 @@ class BookController extends Controller
 		if($book_owner)
 		{
 			//TODO handle user owning 2 copies of the same book
-			return array('isbn' => $isbn, 'google_books' => "already has a copy of this book", 'user' => print_r($book_owner, true));
+			return array('isbn' => $isbn, 'title' => $book_owner->getOwner()->getUsername() . " already has a copy of this book", 'user' => $book_owner->getOwner()->getUsername() );
 		}
 
 		$book_owner = new BookOwner();
@@ -149,6 +149,6 @@ class BookController extends Controller
 		$em->persist($book_owner);
 		$em->flush();
 
-		return array('isbn' => $isbn, 'google_books' => print_r($book, true), 'user' => print_r($book_owner, true));
+		return array('isbn' => $isbn, 'title' => $book->getTitle(), 'user' => $book_owner->getOwner()->getUsername() );
 	}
 }
