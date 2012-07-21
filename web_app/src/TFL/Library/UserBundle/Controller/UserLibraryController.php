@@ -24,7 +24,6 @@ class UserLibraryController extends Controller
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
 		$books = $repository->findByUserId($user->getId());
 		
-		
 		return array('books' => $books);
 	}	
 	
@@ -34,9 +33,12 @@ class UserLibraryController extends Controller
 	 */
 	public function completeLibraryAction()
 	{
-		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
-		$books = $repository->findByIsDeleted(0);
-//var_dump($books);		
+		$em = $this->getDoctrine()->getEntityManager();
+		$query = $em->createQuery(
+			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:BookOwner b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
+		)->setParameter('deleted', '0');
+		$books = $query->getResult();
+		
 		return array('books' => $books);
 	}
 }

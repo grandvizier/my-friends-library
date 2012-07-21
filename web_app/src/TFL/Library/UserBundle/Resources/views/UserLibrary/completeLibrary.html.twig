@@ -9,15 +9,22 @@
 All the books currently registered:
 <table id="fullLibrary" class="tablesorter">
 	<thead>
+		<th>Copies</th>
 		<th>Title</th>
 		<th>Author</th>
 		<th>Owner</th>
 	</thead>
 {% for book_owner in books %}
 	<tr>
-		<td><a href="{{ path('book_display', { 'isbn': book_owner.book.isbn }) }}">{{ book_owner.book.title }}</a></td>
-		<td><a href="{{ path('book_display', { 'isbn': book_owner.book.isbn }) }}">{{ book_owner.book.author }}</a></td>
-		<td><a href="/profile">{{ book_owner.owner.username }}</a></td>
+		<td>{{ book_owner[1] }}</td>
+		<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">{{ book_owner[0].book.title }}</a></td>
+		<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">{{ book_owner[0].book.author }}</a></td>
+		{% if book_owner[1] > 1%}
+			<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">VIEW BOOK TO SEE OWNERS</a></td>
+		{% else %}
+			{#TODO: Link to owner#}
+			<td><a href="/profile">{{ book_owner[0].owner.username }}</a></td>
+		{% endif %}
 	</tr>
 {% endfor %}
 </table>
@@ -28,7 +35,7 @@ All the books currently registered:
 <script>
 $(document).ready(function() 
     { 
-        $("#fullLibrary").tablesorter({sortList: [[0,0], [1,1]]}); 
+        $("#fullLibrary").tablesorter({sortList: [[0,1], [1,0], [2,1]]}); 
     } 
 );
 </script>

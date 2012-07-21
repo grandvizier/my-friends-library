@@ -14,8 +14,8 @@
 	</div>
 
 	{%  if book_owners %}
-		<hr/>
 		{% for book_owner in book_owners %}
+			<hr/>
 			<pre>id: {{ book_owner.owner.id }}</pre>
 			<pre>username: {{ book_owner.owner.username }}</pre>
 			<pre>email: {{ book_owner.owner.email }}</pre>
