@@ -15,9 +15,6 @@ class RegistrationController extends BaseController
 			return new RedirectResponse($route_to_homepage);
 		}
 		
-		//$form = $this->container->get('fos_user.registration.form');
-		//$formHandler = $this->container->get('fos_user.registration.form.handler');
-		
 		$form = $this->container->get('fos_user.registration.form');
 		$formHandler = $this->container->get('fos_user.registration.form.handler');
 		$confirmationEnabled = $this->container->getParameter('fos_user.registration.confirmation.enabled');
