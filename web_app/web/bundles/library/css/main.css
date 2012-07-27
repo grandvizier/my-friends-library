@@ -10,30 +10,50 @@ body
     color:            #313131;
 }
 
-div#header
-{
-	padding: 3px 5px 15px;
-}
-div#main_nav span.nav_links
-{
-	float: left;
-	margin-left: 230px;
-	border: thin solid;
-	padding: 2px;
-}
-div#main_nav div#login
-{
-	float: right;
-	margin-right: 30px;
-	border: thin solid;
-	padding: 2px;
-}
 
 .error
 {
 	color: red;	
 }
 
+/***	HEADER  ***/
+
+div#header
+{
+	background-color: #003463;
+	color: #FFFFFF;
+	height: 40px;
+	padding: 3px 5px 15px;
+}
+div#header a
+{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+div#header a:hover
+{
+	color: #CCC;
+	text-decoration: underline;
+}
+div#main_nav span.nav_links
+{
+	float: left;
+	margin-left: 230px;
+	padding: 2px;
+}
+span.nav_links a
+{
+	padding: 8px;
+}
+div#main_nav div#login
+{
+	float: right;
+	margin-right: 30px;
+	padding: 2px;
+}
+
+
+/***	CONTENT  ***/
 
 div#content
 {
@@ -42,7 +62,7 @@ div#content
 
 
 
-
+/***	FOOTER  ***/
 
 
 div#footer

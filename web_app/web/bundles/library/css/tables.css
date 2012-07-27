@@ -21,23 +21,23 @@ td, td img {
 }
 
 #fullLibrary th {
-	border-bottom: 2px solid #6678B1;
+	border-bottom: 2px solid #003463;
 	font-size: 14px;
 	padding: 10px 8px;
 }
 
 #fullLibrary td {
-	color: #666699;
+	color: #003463;
 	padding: 9px 8px 0;
 	border-bottom: 1px solid #CCCCCC;
 }
 
 #fullLibrary tbody td a:hover{
-	color: #000099;
+	color: #003463;
 }
 
 #fullLibrary tbody td a, a:visited {
-	color: #666699;
+	color: #000099;
 	display:block;
 	height:100%;
 	width:100%;

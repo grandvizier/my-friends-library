@@ -17,6 +17,7 @@
 		<div id="main_nav">
 			<span class="nav_links">
 				{% block main_nav %}
+					{% block home_page_link %}<a href="{{ path('_homepage') }}">Home</a>{% endblock %}
 					<a href="{{ path('book_search') }}">Find a book</a>
 					{% if app.user %}
 						<a href="{{ path('full_library') }}">Full Library</a>
@@ -37,7 +38,7 @@
 			{% endblock %}
 		</div>
 	</div>
-	<hr/>
+
 	<div id="content">
 		{% block body %}{% endblock %}
 	</div>
