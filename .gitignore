@@ -13,3 +13,8 @@ web_app/app/config/security.yml
 web_app/web/uploads/*
 web_app/data/sql/*
 web_app/.project
+
+
+## Temp ignores
+web_app/src/TFL/Library/UserBundle/Listener/
+

@@ -17,7 +17,7 @@ class BookController extends Controller
 	 * @Route("/display/{isbn}", name="book_display")
 	 * @Template()
 	 */
-	public function indexAction($isbn)
+	public function displayAction($isbn)
 	{
 		//find book by isbn in DB first
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');

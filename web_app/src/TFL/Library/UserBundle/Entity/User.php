@@ -107,6 +107,17 @@ class User extends BaseUser
 	
 	
 	
+
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+	
 	/**
 	 * Get firstName
 	 *
@@ -238,4 +249,5 @@ class User extends BaseUser
 	{
 		return $this->phone;
 	}
+
 }
