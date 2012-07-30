@@ -1,7 +1,15 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-<h2>This is the home page to the Friending Library.</h2>
-It's still under works, but soon you'll be able to add your library, and share with others. 
+	<h2>{{ app.user.username }}'s Library</h2>
+	<ul>
+	{% for book_owner in book_owners %}
+		<li class="book">
+			<h3>{{ book_owner.book.title }}</h3>
+			<h4>{{ book_owner.book.author }}</h4>
+			<img src="{{ book_owner.book.image }}" alt="{{ book_owner.book.title }}" />
+		</li>
+	{% endfor %}
+	</ul>
 {% endblock %}
 

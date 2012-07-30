@@ -2,6 +2,7 @@
 namespace TFL\Library\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use TFL\Library\BookBundle\Entity\Book;
@@ -24,7 +25,7 @@ class UserLibraryController extends Controller
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
 		$books = $repository->findByUserId($user->getId());
 		
-		return array('books' => $books);
+		return array('book_owners' => $books);
 	}	
 	
 	/**

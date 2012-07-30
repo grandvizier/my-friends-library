@@ -9,6 +9,7 @@ use TFL\Library\BookBundle\Entity\Book;
 use TFL\Library\BookBundle\Entity\BookOwner;
 use TFL\Library\BookBundle\Util\GoogleBookSearch;
 use FOS\UserBundle\Model\UserInterface;
+use TFL\Library\UserBundle\Entity\Borrow;
 use Symfony\Component\HttpFoundation\Request;
 
 class BookController extends Controller
@@ -150,5 +151,81 @@ class BookController extends Controller
 		$em->flush();
 
 		return array('isbn' => $isbn, 'title' => $book->getTitle(), 'user' => $book_owner->getOwner()->getUsername() );
+	}
+	
+	/**
+	 * Id needed is the ID field of the book_owner table
+	 * 
+	 * @Route("/borrow/{book_owner_id}", name="borrow_book")
+	 * @Template()
+	 */
+	public function borrowAction($book_owner_id)
+	{
+		$user = $this->container->get('security.context')->getToken()->getUser();
+		//TODO handle user doesn't have access to borrow book
+		if (!is_object($user) || !$user instanceof UserInterface) {
+			throw new AccessDeniedException('This user does not have access to borrow a book.');
+		}
+		
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+		$book_owner = $repository->findOneById($book_owner_id);
+		
+		//handle book not found in DB
+		if(!$book_owner)
+		{
+			$problem = 'This book was not found';
+			return $this->render(
+				'TFLLibraryBookBundle:Book:borrowError.html.twig', 
+				array('problem' => $problem, 'problem_data' => $book_owner_id)
+			);
+		}
+
+		//handle not borrowing your own book
+		if($book_owner->getOwner()->getId() == $user->getId())
+		{
+			$problem = 'You cannot borrow your own book';
+			return $this->render(
+				'TFLLibraryBookBundle:Book:borrowError.html.twig',
+				array('problem' => $problem, 'problem_data' => $book_owner->getBook()->getTitle()) 
+			);
+		}
+
+		//handle owner has "deleted" book
+		if($book_owner->getIsDeleted())
+		{
+			$problem = 'This person doesn\'t own this book any more';
+			return $this->render(
+				'TFLLibraryBookBundle:Book:borrowError.html.twig',
+				array('problem' => $problem, 'problem_data' => $book_owner->getBook()->getTitle()) 
+			);
+		}
+		
+		//check if book is already borrowed
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:Borrow');
+		$borrowed_item = $repository->findOneBy(array(
+				'itemId' => $book_owner->getBook()->getId(), 
+				'returned' => 0, 
+			));
+		if($borrowed_item)
+		{
+			$problem = 'This book is already borrowed';
+			return $this->render(
+				'TFLLibraryBookBundle:Book:borrowError.html.twig',
+				array('problem' => $problem, 'problem_data' => $borrowed_item->getBorrowedBy()->getUsername())
+			);
+		}
+		
+		$borrowed_item = new Borrow();
+		$borrowed_item->setItemId($book_owner->getBook()->getId());
+		$borrowed_item->setBorrowedDate(new \DateTime("now"));
+		$borrowed_item->setBorrowedBy($user);
+		
+		
+		$em = $this->getDoctrine()->getEntityManager();
+		$em->persist($borrowed_item);
+		$em->flush();
+		
+		
+		return array('borrowed_item' => $borrowed_item, 'book_borrowed' => $book_owner);
 	}
 }
