@@ -86,10 +86,6 @@ class GoogleBookSearch {
 	
 	private function parseBook() {
 		$book = array();
-		$book['description'] = FALSE;
-		$book['publisher'] = FALSE;
-		$book['date'] = FALSE;
-		$book['image'] = FALSE;
 		
 		while ($this->xpp->read() && $this->xpp->name != "entry") {
 			if ($this->xpp->name{0} == "#")
@@ -140,6 +136,17 @@ class GoogleBookSearch {
 		}
 		
 		$this->xpp->read();
+
+		if (!isset($book['author']))
+			$book['author'] = '';
+		if (!isset($book['description']))
+			$book['description'] = '';
+		if (!isset($book['publisher']))
+			$book['publisher'] = '';
+		if (!isset($book['date']))
+			$book['date'] = '';
+		if (!isset($book['image']))
+			$book['image'] = '';
 		
 		return $book;
 	}
