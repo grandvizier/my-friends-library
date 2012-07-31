@@ -20,6 +20,10 @@ class BookController extends Controller
 	 */
 	public function displayAction($isbn)
 	{
+		$book = FALSE;
+		$book_owners = FALSE;
+		$borrowed = FALSE;
+		
 		//find book by isbn in DB first
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');
 		$book = $repository->findOneByIsbn($isbn);
@@ -27,10 +31,22 @@ class BookController extends Controller
 		{
 			$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
 			$book_owners = $repository->findByBookId($book->getId());
+			
+			//TODO for each book_owner
+			$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:Borrow');
+			$borrowed = $repository->findBy(array('itemId' => $book->getId(), 'returned' => 0));
+			/* $query = $repository->createQueryBuilder('bi')
+				->select(array('bi', 'bo'))
+				->innerJoin('bi.itemId', 'bo', 'WITH', 'bo.is_deleted = 0')
+				->where('bi.returned = 0')
+				->where('bo.bookID > :book_id')
+				->setParameter('book_id', $book->getId())
+				->getQuery();
+			$borrowed = $query->getResult(); */
+			
 		}
 		else
 		{
-			$book_owners = FALSE;
 			$googleBook = new GoogleBookSearch();
 			$book_array = $googleBook->getBookByISBN($isbn);
 			//TODO handle book not found
@@ -38,7 +54,7 @@ class BookController extends Controller
 			$book = $book_array;
 		}
 		
-		return array('book_owners' => $book_owners, 'book' => $book);
+		return array('book_owners' => $book_owners, 'book' => $book, 'borrowed' => $borrowed);
 	}
 
 	
@@ -203,7 +219,7 @@ class BookController extends Controller
 		//check if book is already borrowed
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:Borrow');
 		$borrowed_item = $repository->findOneBy(array(
-				'itemId' => $book_owner->getBook()->getId(), 
+				'itemId' => $book_owner->getId(), 
 				'returned' => 0, 
 			));
 		if($borrowed_item)
@@ -216,7 +232,7 @@ class BookController extends Controller
 		}
 		
 		$borrowed_item = new Borrow();
-		$borrowed_item->setItemId($book_owner->getBook()->getId());
+		$borrowed_item->setItemId($book_owner->getId());
 		$borrowed_item->setBorrowedDate(new \DateTime("now"));
 		$borrowed_item->setBorrowedBy($user);
 		

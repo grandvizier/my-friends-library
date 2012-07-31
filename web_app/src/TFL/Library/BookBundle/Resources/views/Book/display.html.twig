@@ -10,9 +10,10 @@
 		<h4>{{ book.author }}</h4>
 		<img src="{{ book.image }}" alt="{{ book.title }}" />
 		<p>Isnb: {{ book.isbn }}</p>
-		<a href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book to library</a>
+		<a style="display:none" href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book your to library</a>
 	</div>
-
+	{% set owned = 0 %}
+	
 	{%  if book_owners %}
 		{% for book_owner in book_owners %}
 			<hr/>
@@ -20,16 +21,38 @@
 				<a href="{{ path('borrow_book', { 'book_owner_id': book_owner.id }) }}" class="borrow">Borrow this Book</a>
 			{% else %}
 				You own this book
+				{% set owned = 1 %}
 			{% endif %}
 			<pre>id: {{ book_owner.owner.id }}</pre>
 			<pre>username: {{ book_owner.owner.username }}</pre>
 			<pre>email: {{ book_owner.owner.email }}</pre>
 			<pre>enabled: {{ book_owner.owner.enabled }}</pre>
 			<pre>lastLogin: {{ book_owner.owner.lastLogin|date("m/d/Y \\a\\t g:ia") }}</pre>
+			{% if borrowed %}
+				<p class="error">We got suttin: {{ borrowed|length }}</p>
+				
+			{% endif %}
 		{% endfor %}
 	{% else %}
 		<hr/>
 		<h3>This book is not owned by anyone</h3>
 		< Contact us > if there is an error
 	{% endif %}
+	
+<script>
+$(document).ready(function() 
+{ 
+	var book_owned_by_user = {{ owned }};
+	if(!book_owned_by_user)
+	{
+		$('.add_to_library').show();
+	}
+} 
+);
+</script>	
+{% endblock %}
+
+
+{% block javascripts %}
+
 {% endblock %}
