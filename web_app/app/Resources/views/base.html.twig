@@ -13,14 +13,13 @@
 	</head>
 	<body>
 	<div id="header">
-		<img src="" alt="the friending library" />
+		<a href="{{ path('_homepage') }}"><img src="" alt="the friending library" /></a>
 		<div id="main_nav">
 			<span class="nav_links">
 				{% block main_nav %}
-					{% block home_page_link %}<a href="{{ path('_homepage') }}">Home</a>{% endblock %}
 					<a href="{{ path('book_search') }}">Find a book</a>
 					{% if app.user %}
-						<a href="{{ path('full_library') }}">Full Library</a>
+						<a href="{{ path('_homepage') }}">Full Library</a>
 						<a href="{{ path('my_library') }}">My Library</a>
 					{% endif %}
 				{% endblock %}
