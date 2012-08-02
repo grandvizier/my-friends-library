@@ -23,7 +23,7 @@ class HomeController extends Controller
 		//else displat complete library
 		$em = $this->getDoctrine()->getEntityManager();
 		$query = $em->createQuery(
-			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:BookOwner b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
+			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:UserBook b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
 		)->setParameter('deleted', '0');
 		$books = $query->getResult();
 		

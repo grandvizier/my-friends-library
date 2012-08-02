@@ -6,9 +6,9 @@ use TFL\Library\UserBundle\Entity\User;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="borrow_item")
+ * @ORM\Table(name="borrow_user_book")
  */
-class Borrow
+class BorrowBook
 {
 	/**
 	 * @ORM\Id
@@ -18,14 +18,8 @@ class Borrow
 	protected $id;
 	
 	/**
-	 * The type of item borrowed (for when you can borrow more than just books)
-	 * 
-	 * @ORM\Column(name="item_type", type="integer")
-	 */
-	protected $itemType = 1;
-	
-	/**
-	 * @ORM\Column(name="item_id", type="integer")
+	 * @ORM\ManyToOne(targetEntity="UserBook")
+	 * @ORM\JoinColumn(name="user_book_id", referencedColumnName="id")
 	 */
 	protected $itemId;
 	
@@ -61,34 +55,12 @@ class Borrow
 	}
 
 	/**
-	 * Set itemType
-	 *
-	 * @param integer $itemType
-	 * @return Borrow
-	 */
-	public function setItemType($itemType)
-	{
-		$this->itemType = $itemType;
-		return $this;
-	}
-
-	/**
-	 * Get itemType
-	 *
-	 * @return integer 
-	 */
-	public function getItemType()
-	{
-		return $this->itemType;
-	}
-
-	/**
 	 * Set itemId
 	 *
-	 * @param integer $itemId
+	 * @param UserBook $itemId
 	 * @return Borrow
 	 */
-	public function setItemId($itemId)
+	public function setItemId(UserBook $itemId)
 	{
 		$this->itemId = $itemId;
 		return $this;
@@ -97,7 +69,7 @@ class Borrow
 	/**
 	 * Get itemId
 	 *
-	 * @return integer 
+	 * @return UserBook 
 	 */
 	public function getItemId()
 	{

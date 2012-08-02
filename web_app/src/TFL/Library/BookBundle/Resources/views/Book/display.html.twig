@@ -18,7 +18,7 @@
 		{% for book_owner in book_owners %}
 			<hr/>
 			{% if book_owner.owner.id != app.user.id %}
-				<a href="{{ path('borrow_book', { 'book_owner_id': book_owner.id }) }}" class="borrow">Borrow this Book</a>
+				<a href="{{ path('borrow_book', { 'user_book_id': book_owner.id }) }}" class="borrow">Borrow this Book</a>
 			{% else %}
 				You own this book
 				{% set owned = 1 %}

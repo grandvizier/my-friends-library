@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use TFL\Library\BookBundle\Entity\Book;
-use TFL\Library\BookBundle\Entity\BookOwner;
+use TFL\Library\BookBundle\Entity\UserBook;
 use FOS\UserBundle\Model\UserInterface;
 
 class UserLibraryController extends Controller
@@ -22,7 +22,7 @@ class UserLibraryController extends Controller
 			throw new AccessDeniedException('This user does not have access to view their own library.');
 		}
 		
-		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
 		$books = $repository->findByUserId($user->getId());
 		
 		return array('book_owners' => $books);
@@ -36,7 +36,7 @@ class UserLibraryController extends Controller
 	{
 		$em = $this->getDoctrine()->getEntityManager();
 		$query = $em->createQuery(
-			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:BookOwner b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
+			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:UserBook b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
 		)->setParameter('deleted', '0');
 		$books = $query->getResult();
 		

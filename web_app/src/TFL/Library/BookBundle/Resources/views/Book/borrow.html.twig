@@ -7,9 +7,9 @@
 	<pre>Title: {{ book_borrowed.book.title }}</pre>
 	<pre>Owner: {{ book_borrowed.owner.username }}</pre>
 
-	<pre>ID: {{ borrowed_item.id }}</pre>
-	<pre>Borrowed by: {{ borrowed_item.borrowedBy.username }}</pre>
-	<pre>Date borrowed: {{ borrowed_item.borrowedDate|date("m/d/Y \\a\\t g:ia") }}</pre>
-	<pre>Returned: {{ borrowed_item.returned }}</pre>
+	<pre>ID: {{ borrowed_book.id }}</pre>
+	<pre>Borrowed by: {{ borrowed_book.borrowedBy.username }}</pre>
+	<pre>Date borrowed: {{ borrowed_book.borrowedDate|date("m/d/Y \\a\\t g:ia") }}</pre>
+	<pre>Returned: {{ borrowed_book.returned }}</pre>
 	
 {% endblock %}

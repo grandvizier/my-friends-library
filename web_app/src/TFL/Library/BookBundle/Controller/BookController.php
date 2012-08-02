@@ -6,10 +6,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use TFL\Library\BookBundle\Entity\Book;
-use TFL\Library\BookBundle\Entity\BookOwner;
+use TFL\Library\BookBundle\Entity\UserBook;
 use TFL\Library\BookBundle\Util\GoogleBookSearch;
 use FOS\UserBundle\Model\UserInterface;
-use TFL\Library\UserBundle\Entity\Borrow;
+use TFL\Library\UserBundle\Entity\BorrowBook;
 use Symfony\Component\HttpFoundation\Request;
 
 class BookController extends Controller
@@ -29,12 +29,12 @@ class BookController extends Controller
 		$book = $repository->findOneByIsbn($isbn);
 		if($book)
 		{
-			$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+			$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
 			$book_owners = $repository->findByBookId($book->getId());
 			
 			//TODO for each book_owner
-			$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:Borrow');
-			$borrowed = $repository->findBy(array('itemId' => $book->getId(), 'returned' => 0));
+			//$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:BorrowBook');
+			//$borrowed = $repository->findBy(array('itemId' => $book->getId(), 'returned' => 0));
 			/* $query = $repository->createQueryBuilder('bi')
 				->select(array('bi', 'bo'))
 				->innerJoin('bi.itemId', 'bo', 'WITH', 'bo.is_deleted = 0')
@@ -150,7 +150,7 @@ class BookController extends Controller
 			$em->flush();
 		}
 		
-		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
 		$book_owner = $repository->findOneBy(array('userId' => $user->getId(), 'bookId' => $book->getId()));
 		if($book_owner)
 		{
@@ -158,24 +158,23 @@ class BookController extends Controller
 			return array('isbn' => $isbn, 'title' => $book_owner->getOwner()->getUsername() . " already has a copy of this book", 'user' => $book_owner->getOwner()->getUsername() );
 		}
 
-		$book_owner = new BookOwner();
-		$book_owner->setBook($book);
-		$book_owner->setOwner($user);
+		$user_book = new UserBook();
+		$user_book->setBook($book);
+		$user_book->setOwner($user);
 		
 		$em = $this->getDoctrine()->getEntityManager();
-		$em->persist($book_owner);
+		$em->persist($user_book);
 		$em->flush();
 
-		return array('isbn' => $isbn, 'title' => $book->getTitle(), 'user' => $book_owner->getOwner()->getUsername() );
+		return array('isbn' => $isbn, 'title' => $book->getTitle(), 'user' => $user_book->getOwner()->getUsername() );
 	}
 	
 	/**
-	 * Id needed is the ID field of the book_owner table
 	 * 
-	 * @Route("/borrow/{book_owner_id}", name="borrow_book")
+	 * @Route("/borrow/{user_book_id}", name="borrow_book")
 	 * @Template()
 	 */
-	public function borrowAction($book_owner_id)
+	public function borrowAction($user_book_id)
 	{
 		$user = $this->container->get('security.context')->getToken()->getUser();
 		//TODO handle user doesn't have access to borrow book
@@ -183,8 +182,8 @@ class BookController extends Controller
 			throw new AccessDeniedException('This user does not have access to borrow a book.');
 		}
 		
-		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:BookOwner');
-		$book_owner = $repository->findOneById($book_owner_id);
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
+		$book_owner = $repository->findOneById($user_book_id);
 		
 		//handle book not found in DB
 		if(!$book_owner)
@@ -192,7 +191,7 @@ class BookController extends Controller
 			$problem = 'This book was not found';
 			return $this->render(
 				'TFLLibraryBookBundle:Book:borrowError.html.twig', 
-				array('problem' => $problem, 'problem_data' => $book_owner_id)
+				array('problem' => $problem, 'problem_data' => $user_book_id)
 			);
 		}
 
@@ -217,31 +216,31 @@ class BookController extends Controller
 		}
 		
 		//check if book is already borrowed
-		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:Borrow');
-		$borrowed_item = $repository->findOneBy(array(
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:BorrowBook');
+		$borrowed_book = $repository->findOneBy(array(
 				'itemId' => $book_owner->getId(), 
 				'returned' => 0, 
 			));
-		if($borrowed_item)
+		if($borrowed_book)
 		{
 			$problem = 'This book is already borrowed';
 			return $this->render(
 				'TFLLibraryBookBundle:Book:borrowError.html.twig',
-				array('problem' => $problem, 'problem_data' => $borrowed_item->getBorrowedBy()->getUsername())
+				array('problem' => $problem, 'problem_data' => $borrowed_book->getBorrowedBy()->getUsername())
 			);
 		}
 		
-		$borrowed_item = new Borrow();
-		$borrowed_item->setItemId($book_owner->getId());
-		$borrowed_item->setBorrowedDate(new \DateTime("now"));
-		$borrowed_item->setBorrowedBy($user);
+		$borrowed_book = new BorrowBook();
+		$borrowed_book->setItemId($book_owner->getId());
+		$borrowed_book->setBorrowedDate(new \DateTime("now"));
+		$borrowed_book->setBorrowedBy($user);
 		
 		
 		$em = $this->getDoctrine()->getEntityManager();
-		$em->persist($borrowed_item);
+		$em->persist($borrowed_book);
 		$em->flush();
 		
-		
-		return array('borrowed_item' => $borrowed_item, 'book_borrowed' => $book_owner);
+		//TODO - only need on parameter passed
+		return array('borrowed_book' => $borrowed_book, 'book_borrowed' => $book_owner);
 	}
 }

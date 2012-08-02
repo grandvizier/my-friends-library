@@ -7,9 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
- * @ORM\Table(name="book_owner")
+ * @ORM\Table(name="user_book")
  */
-class BookOwner
+class UserBook
 {
 	/**
 	 * @ORM\Id
@@ -70,7 +70,7 @@ class BookOwner
 	 * Set bookId
 	 *
 	 * @param integer $bookId
-	 * @return BookOwner
+	 * @return UserBook
 	 */
 	public function setBookId($bookId)
 	{
@@ -92,7 +92,7 @@ class BookOwner
 	 * Set userId
 	 *
 	 * @param integer $userId
-	 * @return BookOwner
+	 * @return UserBook
 	 */
 	public function setUserId($userId)
 	{
@@ -114,7 +114,7 @@ class BookOwner
 	 * Set isDeleted
 	 *
 	 * @param boolean $isDeleted
-	 * @return BookOwner
+	 * @return UserBook
 	 */
 	public function setIsDeleted($isDeleted)
 	{
@@ -136,7 +136,7 @@ class BookOwner
 	 * Set created_at
 	 *
 	 * @param datetime $createdAt
-	 * @return BookOwner
+	 * @return UserBook
 	 */
 	public function setCreatedAt($createdAt)
 	{
@@ -158,7 +158,7 @@ class BookOwner
 	 * Set updated_at
 	 *
 	 * @param datetime $updatedAt
-	 * @return BookOwner
+	 * @return UserBook
 	 */
 	public function setUpdatedAt($updatedAt)
 	{
@@ -198,7 +198,7 @@ class BookOwner
 	/**
 	 * 
 	 * @param Book $book
-	 * @return BookOwner 
+	 * @return UserBook 
 	 */
 	public function setBook($book)
 	{
@@ -218,7 +218,7 @@ class BookOwner
 	/**
 	 * 
 	 * @param User $owner
-	 * @return BookOwner 
+	 * @return UserBook 
 	 */
 	public function setOwner($owner)
 	{

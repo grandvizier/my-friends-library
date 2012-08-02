@@ -23,7 +23,7 @@ All the books currently registered:
 			<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">VIEW BOOK TO SEE OWNERS</a></td>
 		{% else %}
 			{#TODO: Link to owner#}
-			<td><a href="/profile">{{ book_owner[0].owner.username }}</a></td>
+			<td><a href="{{ path('fos_user_profile_show') }}">{{ book_owner[0].owner.username }}</a></td>
 		{% endif %}
 	</tr>
 {% endfor %}
