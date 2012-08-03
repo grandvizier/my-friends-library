@@ -1,9 +1,13 @@
 {% extends '::base.html.twig' %}
 
 {% block body %}
-	<h2>{{ app.user.username }}'s Library</h2>
+	<h2>{{ user.username }}'s Library</h2>
+	<h3>books have been borrowed</h3>
+	{% for item in books_borrowed %}
+		{{ dump(item.user_book.book.title) }} <hr/>
+	{% endfor %}
 	<ul>
-	{% for book_owner in book_owners %}
+	{% for book_owner in books_owned %}
 		<li class="book">
 			<h3>{{ book_owner.book.title }}</h3>
 			<h4>{{ book_owner.book.author }}</h4>

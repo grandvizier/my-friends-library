@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
 	/**
 	 * @Route("/")
-	 * @Template("TFLLibraryUserBundle:UserLibrary:completeLibrary.html.twig")
+	 * @Template("TFLLibraryUserBundle:Home:libraryTable.html.twig")
 	 */
 	public function homepageAction()
 	{

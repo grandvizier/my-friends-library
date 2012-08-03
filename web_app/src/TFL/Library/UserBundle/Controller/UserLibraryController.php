@@ -13,7 +13,7 @@ class UserLibraryController extends Controller
 {
 	/**
 	 * @Route("/profile/my_library", name="my_library")
-	 * @Template()
+	 * @Template("TFLLibraryUserBundle:UserLibrary:usersLibrary.html.twig")
 	 */
 	public function indexAction()
 	{
@@ -25,21 +25,42 @@ class UserLibraryController extends Controller
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
 		$books = $repository->findByUserId($user->getId());
 		
-		return array('book_owners' => $books);
+		$books_borrowed = $this->get_books_user_has($user->getId());
+		
+		return array('user' => $user, 'books_owned' => $books, 'books_borrowed' => $books_borrowed);
 	}	
 	
 	/**
-	 * @Route("/full_library", name="full_library")
+	 * @Route("/profile/{username}", name="their_library")
 	 * @Template()
 	 */
-	public function completeLibraryAction()
+	public function usersLibraryAction($username)
+	{
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:User');
+		$user = $repository->findOneByUsername($username);
+		if (!is_object($user) || !$user instanceof UserInterface) {
+			throw new AccessDeniedException('This user does not have a library.');
+		}
+		
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
+		$books = $repository->findByUserId($user->getId());
+		
+		$books_borrowed = $this->get_books_user_has($user->getId());
+
+		return array('user' => $user, 'books_owned' => $books, 'books_borrowed' => $books_borrowed);
+	}
+	
+	
+	private function get_books_user_has($user_id)
 	{
 		$em = $this->getDoctrine()->getEntityManager();
 		$query = $em->createQuery(
-			'SELECT DISTINCT b, count(b.id) FROM TFLLibraryBookBundle:UserBook b WHERE b.isDeleted = :deleted GROUP BY b.bookId'
-		)->setParameter('deleted', '0');
-		$books = $query->getResult();
-		
-		return array('books' => $books);
+				'SELECT ub as user_book
+				FROM TFLLibraryBookBundle:UserBook ub
+				LEFT JOIN ub.borrowings bub WITH bub.returned = 0
+				WHERE ub.isDeleted = :deleted
+				AND bub.borrowedBy = :user_id'
+		)->setParameter('deleted', '0')->setParameter('user_id', $user_id);
+		return $query->getResult();
 	}
 }

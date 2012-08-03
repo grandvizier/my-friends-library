@@ -25,10 +25,10 @@ All the books currently registered:
 			{#TODO: Link to owner (not user) #}
 			<td class="who-has-it">
 				{% if book_array.current_borrower %}
-					<a class="borrower" href="{{ path('fos_user_profile_show') }}">{{ book_array.current_borrower.username }}</a>
+					<a class="borrower" href="{{ path('their_library', {'username': book_array.current_borrower.username}) }}">{{ book_array.current_borrower.username }}</a>: 
 				{% endif %}
 				<span class="owner">
-					<a href="{{ path('fos_user_profile_show') }}">{{ book_array.book_owner.username }}</a>
+					<a href="{{ path('their_library', {'username': book_array.book_owner.username}) }}">{{ book_array.book_owner.username }}</a>
 				</span>
 			</td>
 		{% endif %}
