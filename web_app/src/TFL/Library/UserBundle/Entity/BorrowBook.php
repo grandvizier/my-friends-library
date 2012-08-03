@@ -18,7 +18,7 @@ class BorrowBook
 	protected $id;
 	
 	/**
-	 * @ORM\ManyToOne(targetEntity="UserBook")
+	 * @ORM\ManyToOne(targetEntity="TFL\Library\BookBundle\Entity\UserBook", inversedBy="borrowings")
 	 * @ORM\JoinColumn(name="user_book_id", referencedColumnName="id")
 	 */
 	protected $itemId;

@@ -42,3 +42,14 @@ td, td img {
 	height:100%;
 	width:100%;
 }
+
+
+#fullLibrary tbody td.who-has-it a, a:visited
+{
+	display: inline;
+}
+
+.who-has-it .owner a, a:visited {
+	font-weight: bold;
+}
+

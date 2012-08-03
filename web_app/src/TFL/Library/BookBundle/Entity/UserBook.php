@@ -15,10 +15,19 @@ class UserBook
 	 * @ORM\Id
 	 * @ORM\Column(type="integer")
 	 * @ORM\GeneratedValue(strategy="AUTO")
+	 * 
+	 * 
 	 */
-	protected $id;	
+	protected $id;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="TFL\Library\UserBundle\Entity\BorrowBook", mappedBy="itemId")
+	 */
+	protected $borrowings;
 	
 	/**
+	 * TODO remove the book id and user id paramters
+	 * 
 	 * @ORM\Column(name="book_id", type="integer")
 	 */
 	protected $bookId;

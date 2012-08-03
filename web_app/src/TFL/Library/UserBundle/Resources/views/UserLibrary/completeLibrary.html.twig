@@ -12,18 +12,25 @@ All the books currently registered:
 		<th>Copies</th>
 		<th>Title</th>
 		<th>Author</th>
-		<th>Owner</th>
+		<th>Who Has It</th>
 	</thead>
-{% for book_owner in books %}
+{% for book_array in books %}
 	<tr>
-		<td>{{ book_owner[1] }}</td>
-		<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">{{ book_owner[0].book.title }}</a></td>
-		<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">{{ book_owner[0].book.author }}</a></td>
-		{% if book_owner[1] > 1%}
-			<td><a href="{{ path('book_display', { 'isbn': book_owner[0].book.isbn }) }}">VIEW BOOK TO SEE OWNERS</a></td>
+		<td>{{ book_array.count }}</td>
+		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.title }}</a></td>
+		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.author }}</a></td>
+		{% if book_array.count > 1%}
+			<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">VIEW BOOK TO SEE OWNERS</a></td>
 		{% else %}
-			{#TODO: Link to owner#}
-			<td><a href="{{ path('fos_user_profile_show') }}">{{ book_owner[0].owner.username }}</a></td>
+			{#TODO: Link to owner (not user) #}
+			<td class="who-has-it">
+				{% if book_array.current_borrower %}
+					<a class="borrower" href="{{ path('fos_user_profile_show') }}">{{ book_array.current_borrower.username }}</a>
+				{% endif %}
+				<span class="owner">
+					<a href="{{ path('fos_user_profile_show') }}">{{ book_array.book_owner.username }}</a>
+				</span>
+			</td>
 		{% endif %}
 	</tr>
 {% endfor %}
