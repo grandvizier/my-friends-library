@@ -1,8 +1,10 @@
 {% extends '::base.html.twig' %}
 
+{% block title %}TFL - {{ user.username }}'s Library{% endblock %}
+
 {% block body %}
 	<h2>{{ user.username }}'s Library</h2>
-	<h3>books have been borrowed</h3>
+	<h3>borrowed books</h3>
 	{% for item in books_borrowed %}
 		{{ dump(item.user_book.book.title) }} <hr/>
 	{% endfor %}

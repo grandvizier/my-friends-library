@@ -17,7 +17,7 @@ td, td img {
 	font-size: 12px;
 	margin: 20px;
 	text-align: left;
-	width: 850px;
+	width: 950px;
 }
 
 #fullLibrary th {
@@ -44,12 +44,9 @@ td, td img {
 }
 
 
-#fullLibrary tbody td.who-has-it a, a:visited
+#fullLibrary tbody td.who-has-it 
 {
-	display: inline;
+	width: 85px;
 }
 
-.who-has-it .owner a, a:visited {
-	font-weight: bold;
-}
 

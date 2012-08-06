@@ -21,8 +21,9 @@ class BookController extends Controller
 	public function displayAction($isbn)
 	{
 		$book = FALSE;
-		$book_owners = FALSE;
+		$books_in_library = FALSE;
 		$borrowed = FALSE;
+		$user = $this->container->get('security.context')->getToken()->getUser();
 		
 		//find book by isbn in DB first
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');
@@ -32,18 +33,25 @@ class BookController extends Controller
 			$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
 			$book_owners = $repository->findByBookId($book->getId());
 			
-			//TODO for each book_owner
-			//$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:BorrowBook');
-			//$borrowed = $repository->findBy(array('itemId' => $book->getId(), 'returned' => 0));
-			/* $query = $repository->createQueryBuilder('bi')
-				->select(array('bi', 'bo'))
-				->innerJoin('bi.itemId', 'bo', 'WITH', 'bo.is_deleted = 0')
-				->where('bi.returned = 0')
-				->where('bo.bookID > :book_id')
-				->setParameter('book_id', $book->getId())
-				->getQuery();
-			$borrowed = $query->getResult(); */
-			
+			//for each book_owner 
+			if($book_owners)
+			{
+				foreach($book_owners as $user_book)
+				{
+					//check if book is borrowed
+					$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:BorrowBook');
+					$borrowed = $repository->findOneBy(array('itemId' => $user_book->getId(), 'returned' => 0));
+					
+					$user_is_owner = ($user->getId() == $user_book->getOwner()->getId()) ? TRUE : FALSE;
+					
+					$books_in_library[] = array(
+						'book_owner' => 	$user_book,
+						'borrowed' => 	$borrowed,
+						'user_is_owner' => 	$user_is_owner,
+					);
+				}
+			}
+		
 		}
 		else
 		{
@@ -54,7 +62,7 @@ class BookController extends Controller
 			$book = $book_array;
 		}
 		
-		return array('book_owners' => $book_owners, 'book' => $book, 'borrowed' => $borrowed);
+		return array('books_in_library' => $books_in_library, 'book' => $book);
 	}
 
 	
@@ -177,16 +185,16 @@ class BookController extends Controller
 	public function borrowAction($user_book_id)
 	{
 		$user = $this->container->get('security.context')->getToken()->getUser();
-		//TODO handle user doesn't have access to borrow book
+		//handle user doesn't have access to borrow book
 		if (!is_object($user) || !$user instanceof UserInterface) {
 			throw new AccessDeniedException('This user does not have access to borrow a book.');
 		}
 		
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:UserBook');
-		$book_owner = $repository->findOneById($user_book_id);
+		$user_book = $repository->findOneById($user_book_id);
 		
 		//handle book not found in DB
-		if(!$book_owner)
+		if(!$user_book)
 		{
 			$problem = 'This book was not found';
 			return $this->render(
@@ -195,30 +203,30 @@ class BookController extends Controller
 			);
 		}
 
-		//handle not borrowing your own book
-		if($book_owner->getOwner()->getId() == $user->getId())
+		//handle borrowing your own book (as in you can't)
+		if($user_book->getOwner()->getId() == $user->getId())
 		{
 			$problem = 'You cannot borrow your own book';
 			return $this->render(
 				'TFLLibraryBookBundle:Book:borrowError.html.twig',
-				array('problem' => $problem, 'problem_data' => $book_owner->getBook()->getTitle()) 
+				array('problem' => $problem, 'problem_data' => $user_book->getBook()->getTitle()) 
 			);
 		}
 
 		//handle owner has "deleted" book
-		if($book_owner->getIsDeleted())
+		if($user_book->getIsDeleted())
 		{
 			$problem = 'This person doesn\'t own this book any more';
 			return $this->render(
 				'TFLLibraryBookBundle:Book:borrowError.html.twig',
-				array('problem' => $problem, 'problem_data' => $book_owner->getBook()->getTitle()) 
+				array('problem' => $problem, 'problem_data' => $user_book->getBook()->getTitle()) 
 			);
 		}
 		
 		//check if book is already borrowed
 		$repository = $this->getDoctrine()->getRepository('TFLLibraryUserBundle:BorrowBook');
 		$borrowed_book = $repository->findOneBy(array(
-				'itemId' => $book_owner->getId(), 
+				'itemId' => $user_book->getId(), 
 				'returned' => 0, 
 			));
 		if($borrowed_book)
@@ -231,7 +239,7 @@ class BookController extends Controller
 		}
 		
 		$borrowed_book = new BorrowBook();
-		$borrowed_book->setItemId($book_owner->getId());
+		$borrowed_book->setItemId($user_book);
 		$borrowed_book->setBorrowedDate(new \DateTime("now"));
 		$borrowed_book->setBorrowedBy($user);
 		
@@ -241,6 +249,6 @@ class BookController extends Controller
 		$em->flush();
 		
 		//TODO - only need on parameter passed
-		return array('borrowed_book' => $borrowed_book, 'book_borrowed' => $book_owner);
+		return array('borrowed_book' => $borrowed_book, 'book_borrowed' => $user_book);
 	}
 }

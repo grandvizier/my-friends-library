@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}This is the page for {{ book.title }}{% endblock %}
+{% block title %}TFL - Book: {{ book.title }}{% endblock %}
 
         
 {% block body %}
@@ -10,27 +10,31 @@
 		<h4>{{ book.author }}</h4>
 		<img src="{{ book.image }}" alt="{{ book.title }}" />
 		<p>Isnb: {{ book.isbn }}</p>
-		<a style="display:none" href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book your to library</a>
 	</div>
 	{% set owned = 0 %}
 	
-	{%  if book_owners %}
-		{% for book_owner in book_owners %}
+	{%  if books_in_library %}
+		{% for book_in_library in books_in_library %}
 			<hr/>
-			{% if book_owner.owner.id != app.user.id %}
-				<a href="{{ path('borrow_book', { 'user_book_id': book_owner.id }) }}" class="borrow">Borrow this Book</a>
-			{% else %}
-				You own this book
+			{% if book_in_library.user_is_owner %}
+				<p>You own this book</p>
 				{% set owned = 1 %}
-			{% endif %}
-			<pre>id: {{ book_owner.owner.id }}</pre>
-			<pre>username: {{ book_owner.owner.username }}</pre>
-			<pre>email: {{ book_owner.owner.email }}</pre>
-			<pre>enabled: {{ book_owner.owner.enabled }}</pre>
-			<pre>lastLogin: {{ book_owner.owner.lastLogin|date("m/d/Y \\a\\t g:ia") }}</pre>
-			{% if borrowed %}
-				<p class="error">We got suttin: {{ borrowed|length }}</p>
-				
+				{% if book_in_library.borrowed %}
+					<p class="error">Currently borrowed by: {{ book_in_library.borrowed.borrowedBy.username }}</p>
+				{% endif %}
+			{% else %}
+				<pre>owner id: {{ book_in_library.book_owner.owner.id }}</pre>
+				<pre>username: {{ book_in_library.book_owner.owner.username }}</pre>
+				<pre>email: {{ book_in_library.book_owner.owner.email }}</pre>
+				<pre>lastLogin: {{ book_in_library.book_owner.owner.lastLogin|date("m/d/Y \\a\\t g:ia") }}</pre>
+				{% if not book_in_library.borrowed %}
+					<a href="{{ path('borrow_book', { 'user_book_id': book_in_library.book_owner.id }) }}" class="borrow">Borrow this Book</a>
+				{% else %}
+					<p class="error">Currently borrowed by: {{ book_in_library.borrowed.borrowedBy.username }}</p>
+					{% if book_in_library.borrowed.borrowedBy.id != app.user.id %}
+						<a href="{{ path('borrow_book', { 'user_book_id': book_in_library.book_owner.id }) }}" class="borrow">Join Waitlist (TODO)</a>
+					{% endif %}
+				{% endif %}
 			{% endif %}
 		{% endfor %}
 	{% else %}
@@ -39,17 +43,11 @@
 		< Contact us > if there is an error
 	{% endif %}
 	
-<script>
-$(document).ready(function() 
-{ 
-	var book_owned_by_user = {{ owned }};
-	if(!book_owned_by_user)
-	{
-		$('.add_to_library').show();
-	}
-} 
-);
-</script>	
+	{% if not owned %}
+		<hr/>
+		<p><a href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book your to library</a></p>
+	{% endif %}
+	
 {% endblock %}
 
 

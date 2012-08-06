@@ -12,6 +12,7 @@ All the books currently registered:
 		<th>Copies</th>
 		<th>Title</th>
 		<th>Author</th>
+		<th>Owner</th>
 		<th>Who Has It</th>
 	</thead>
 {% for book_array in books %}
@@ -19,19 +20,20 @@ All the books currently registered:
 		<td>{{ book_array.count }}</td>
 		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.title }}</a></td>
 		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.author }}</a></td>
-		{% if book_array.count > 1%}
-			<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">VIEW BOOK TO SEE OWNERS</a></td>
-		{% else %}
-			{#TODO: Link to owner (not user) #}
-			<td class="who-has-it">
-				{% if book_array.current_borrower %}
-					<a class="borrower" href="{{ path('their_library', {'username': book_array.current_borrower.username}) }}">{{ book_array.current_borrower.username }}</a>: 
-				{% endif %}
-				<span class="owner">
-					<a href="{{ path('their_library', {'username': book_array.book_owner.username}) }}">{{ book_array.book_owner.username }}</a>
-				</span>
-			</td>
-		{% endif %}
+		<td>		
+			{% if book_array.count > 1 %}
+				<a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">VIEW ALL OWNERS</a>
+			{% else %}
+				<a href="{{ path('their_library', {'username': book_array.book_owner.username}) }}">{{ book_array.book_owner.username }}</a>
+			{% endif %}
+		</td>
+		<td class="who-has-it">
+			{% if book_array.count < 2 and book_array.current_borrower %}
+				<a class="borrower" href="{{ path('their_library', {'username': book_array.current_borrower.username}) }}">{{ book_array.current_borrower.username }}</a> 
+			{% else %}
+				<span>&nbsp;</span>
+			{% endif %}
+		</td>
 	</tr>
 {% endfor %}
 </table>

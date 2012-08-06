@@ -3,6 +3,7 @@ namespace TFL\Library\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use TFL\Library\UserBundle\Entity\User;
+use TFL\Library\BookBundle\Entity\UserBook;
 
 /**
  * @ORM\Entity
