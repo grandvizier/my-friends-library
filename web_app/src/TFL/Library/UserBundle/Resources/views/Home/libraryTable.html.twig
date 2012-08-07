@@ -19,7 +19,7 @@ All the books currently registered:
 	<tr>
 		<td>{{ book_array.count }}</td>
 		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.title }}</a></td>
-		<td><a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">{{ book_array.book.author }}</a></td>
+		<td><a href="{{ path('author_search', { 'author': book_array.book.author }) }}">{{ book_array.book.author }}</a></td>
 		<td>		
 			{% if book_array.count > 1 %}
 				<a href="{{ path('book_display', { 'isbn': book_array.book.isbn }) }}">VIEW ALL OWNERS</a>

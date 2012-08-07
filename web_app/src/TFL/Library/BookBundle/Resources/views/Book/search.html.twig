@@ -31,7 +31,23 @@
 		</div>
 	{% elseif book_array %}
 		<ul>
-		{% for book in book_array %}
+		<h1>Books in Library</h1>
+		{% for book in book_array.in_library %}
+			<li class="book">
+				<h3>{{ book.title }}</h3>
+				<h4>{{ book.author }}</h4>
+				<p class="isbn"><span>ISBN: </span>{{ book.isbn }}</p>
+				<a href="{{ path('book_display', { 'isbn': book.isbn }) }}" class="book_image">
+					<img src="{{ book.image }}" alt="{{ book.title }}" />
+				</a>
+				<a href="{{ path('add_to_library', { 'isbn': book.isbn }) }}" class="add_to_library">Add book to library</a>
+				<a href="{{ path('book_display', { 'isbn': book.isbn }) }}" class="book_display">Display book</a>
+			</li>
+		{% endfor %}
+		</ul>
+		<ul>
+		<h1>Google Search Results</h1>
+		{% for book in book_array.from_google %}
 			<li class="book">
 				<h3>{{ book.title }}</h3>
 				<h4>{{ book.author }}</h4>

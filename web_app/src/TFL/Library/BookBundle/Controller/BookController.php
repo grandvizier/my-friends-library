@@ -102,6 +102,7 @@ class BookController extends Controller
 			{
 				$keywords_form->bindRequest($request);
 				$book_array = $googleBook->getBooksByKeyword( $form_data['keywords'] );
+				$book_array = $this->filter_results_from_library($book_array);
 			}
 			if(!$book || !$book_array)
 			{
@@ -118,6 +119,47 @@ class BookController extends Controller
 		);
 	}
 
+	
+	/**
+	 * @Route("/search/author/{author}", name="author_search")
+	 * @Template("TFLLibraryBookBundle:Book:search.html.twig")
+	 */
+	public function searchAuthorAction($author)
+	{
+		$book = null;
+		$book_array = null;
+		$book_not_found = true;
+		$defaultData = array('search_type' => 'isbn');
+		
+		$form = $this->createFormBuilder($defaultData)
+			->add('isbn', 'text')
+			->add('search_type', 'hidden')
+			->getForm();
+		
+		$defaultData['search_type'] = 'keywords';
+		$keywords_form = $this->createFormBuilder($defaultData)
+			->add('keywords', 'text')
+			->add('search_type', 'hidden')
+			->getForm();
+		
+		//TODO set author as keyword
+		$googleBook = new GoogleBookSearch();
+		//$keywords_form->bindRequest($request);
+		$book_array = $googleBook->getBooksByKeyword( $author );
+		if($book_array)
+		{
+			$book_not_found = false;
+			$book_array = $this->filter_results_from_library($book_array);
+		}
+		
+		return array(
+				'form' => $form->createView(),
+				'keywords_form' => $keywords_form->createView(),
+				'book' => $book,
+				'book_array' => $book_array,
+				'book_not_found' => $book_not_found
+		);
+	}
 	
     
 	/**
@@ -250,5 +292,38 @@ class BookController extends Controller
 		
 		//TODO - only need on parameter passed
 		return array('borrowed_book' => $borrowed_book, 'book_borrowed' => $user_book);
+	}
+	
+	/**
+	 * TODO better definition and method refactor (ie helper class)
+	 * 
+	 * @param Array $books
+	 * @return Array
+	 */
+	private function filter_results_from_library($books)
+	{
+		$books_array = array('in_library' => array(), 'from_google' => array());
+		if(!count($books))
+		{
+			return $books;
+		}
+		
+		$repository = $this->getDoctrine()->getRepository('TFLLibraryBookBundle:Book');
+		foreach($books as $key => $google_book)
+		{
+			if(!isset($google_book['identifier']['ISBN2']))
+			{
+				continue;
+			}
+			$book = $repository->findOneByIsbn($google_book['identifier']['ISBN2']);
+			if($book)
+			{
+				$books_array['in_library'][] = $book;
+				unset($books[$key]);
+			}
+		}
+		$books_array['from_google'] = $books;
+		
+		return $books_array;
 	}
 }
